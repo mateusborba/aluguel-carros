@@ -1,12 +1,7 @@
-import { auth } from "@/auth";
 import { Car } from "lucide-react";
-import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 const AuthLayout = async ({ children }: { children: ReactNode }) => {
-  const session = await auth();
-  if (session) redirect("/");
-
   return (
     <main className="h-screen w-full items-center justify-center flex">
       <div className="bg-white w-full h-full hidden lg:flex flex-col justify-between items-center py-10">

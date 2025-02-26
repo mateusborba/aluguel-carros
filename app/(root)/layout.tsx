@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
-import { AppSidebar } from "@/components/app-sidebar";
-import { LogoutButton } from "@/components/logout-button";
+import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { ToggleThemeButton } from "@/components/toggle-theme";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
@@ -27,6 +27,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
               </div>
             </div>
           </header>
+          <Separator />
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
         </SidebarInset>
       </SidebarProvider>

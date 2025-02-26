@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { db } from "@/db/drizzle";
 import { users } from "@/db/schema";
 import { hashPassword } from "@/lib/hash-password";
@@ -58,12 +58,17 @@ export const signInAction = async ({
       redirect: false,
     });
 
-    if (result?.error) {
+    if (result?.err) {
       return { success: false, err: result.err };
     }
 
     return { success: true };
   } catch (error) {
+    console.log(error);
     return { success: false, error: "Signin error" };
   }
+};
+
+export const logOutAction = async () => {
+  await signOut({ redirectTo: "/" });
 };

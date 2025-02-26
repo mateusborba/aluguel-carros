@@ -20,6 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
+import { redirect } from "next/navigation";
 
 interface RegisterFormProps {
   submitForm: (
@@ -72,6 +73,7 @@ export const RegisterForm = ({ submitForm }: RegisterFormProps) => {
     }
 
     toast.success("Usuário criado com sucesso");
+    redirect("/sign-in");
   };
 
   const onError = (error: FieldErrors<RegisterFormType>) => {
@@ -191,7 +193,7 @@ export const RegisterForm = ({ submitForm }: RegisterFormProps) => {
             </div>
             <div className="mt-4 text-center text-sm">
               Já possui conta?{" "}
-              <Link href="/sign-up" className="underline underline-offset-4">
+              <Link href="/sign-in" className="underline underline-offset-4">
                 Ir para o login
               </Link>
             </div>

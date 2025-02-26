@@ -1,1 +1,0 @@
-ALTER TABLE "users" ALTER COLUMN "data_nascimento" SET DATA TYPE timestamp;

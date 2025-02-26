@@ -1,5 +1,6 @@
 "use client";
 
+import { logOutAction } from "@/actions/users-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,32 +12,17 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 
 export function NavUser({
   user,
   email,
-  onLogout,
 }: {
   user?: string | null;
   email?: string | null;
-  onLogout?: () => void;
 }) {
-  const { isMobile } = useSidebar();
-
-  console.log(isMobile);
-
-  const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      console.log("Logout clicked");
-    }
-  };
-
   return (
-    <SidebarMenu>
+    <SidebarMenu className="px-3 py-1.5">
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -54,13 +40,14 @@ export function NavUser({
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem
-              className="cursor-pointer text-red-600 hover:bg-red-100"
-              onClick={handleLogout}
-            >
-              Sair
-            </DropdownMenuItem>
+          <DropdownMenuContent align="end" className="w-42">
+            <form action={logOutAction} className="w-full">
+              <button type="submit" className="w-full">
+                <DropdownMenuItem className="cursor-pointer text-red-600 hover:bg-red-100">
+                  Sair
+                </DropdownMenuItem>
+              </button>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

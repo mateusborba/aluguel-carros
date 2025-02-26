@@ -1,9 +1,13 @@
 interface Carro {
-  id: string;
-  modelo: string | null;
-  ano: number | null;
-  placa: string | null;
-  status: "alugado" | "disponível" | null;
+  id?: string;
+  modelo: string;
+  marca: string;
+  ano: string;
+  placa: string;
+  status?: "alugado" | "disponível" | null;
+  preco: number;
+  imagem: string;
+  userId: string;
 }
 
 interface User {

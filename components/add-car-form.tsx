@@ -68,7 +68,11 @@ export function AddCarForm() {
     setLoading(true);
 
     try {
-      if (session.status !== "authenticated") {
+      if (
+        !session ||
+        session.status !== "authenticated" ||
+        !session.data.user
+      ) {
         return toast.error(
           "Você precisa estar logado para adicionar um carro."
         );

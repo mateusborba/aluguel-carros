@@ -21,6 +21,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { redirect } from "next/navigation";
+import { formatPhone } from "@/lib/format-phone";
+import { formatCpf } from "@/lib/format-cpf";
 
 interface RegisterFormProps {
   submitForm: (
@@ -48,6 +50,14 @@ export const RegisterForm = ({ submitForm }: RegisterFormProps) => {
     control,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormType>({
+    defaultValues: {
+      cpf: "",
+      telefone: "",
+      email: "",
+      dataNascimento: undefined,
+      nomeCompleto: "",
+      senha: "",
+    },
     resolver: zodResolver(registerFormSchema),
   });
 
@@ -121,32 +131,59 @@ export const RegisterForm = ({ submitForm }: RegisterFormProps) => {
                 )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email">CPF</Label>
-                <Input
-                  id="cpf"
-                  type="cpf"
-                  placeholder="Digite seu cpf"
-                  {...register("cpf")}
+                <Controller
+                  name="cpf"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <Label htmlFor="email">CPF</Label>
+                      <Input
+                        id="cpf"
+                        value={field.value}
+                        onChange={(e) => {
+                          const { value } = e.target;
+                          const valueFormated = formatCpf(value);
+                          field.onChange(valueFormated);
+                        }}
+                        type="cpf"
+                        placeholder="Digite seu cpf"
+                      />
+                      {errors.cpf && (
+                        <span className="text-sm text-red-600">
+                          {errors.cpf.message}
+                        </span>
+                      )}
+                    </>
+                  )}
                 />
-                {errors.cpf && (
-                  <span className="text-sm text-red-600">
-                    {errors.cpf.message}
-                  </span>
-                )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="phone">Telefone</Label>
-                <Input
-                  id="phone"
-                  type="text"
-                  placeholder="Digite seu telefone"
-                  {...register("telefone")}
+                <Controller
+                  control={control}
+                  name="telefone"
+                  render={({ field }) => (
+                    <>
+                      <Label htmlFor="phone">Telefone</Label>
+                      <Input
+                        value={field.value}
+                        onChange={(e) => {
+                          const { value } = e.target;
+
+                          const valueFormated = formatPhone(value);
+                          field.onChange(valueFormated);
+                        }}
+                        id="phone"
+                        type="text"
+                        placeholder="Digite seu telefone"
+                      />
+                      {errors.telefone && (
+                        <span className="text-sm text-red-600">
+                          {errors.telefone.message}
+                        </span>
+                      )}
+                    </>
+                  )}
                 />
-                {errors.telefone && (
-                  <span className="text-sm text-red-600">
-                    {errors.telefone.message}
-                  </span>
-                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="birthday">Data de nascimento</Label>

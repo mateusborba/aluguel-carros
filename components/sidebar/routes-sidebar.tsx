@@ -1,7 +1,4 @@
-"use client";
-
-import { LayoutDashboard } from "lucide-react";
-import React, { type ReactNode } from "react";
+import React from "react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,54 +6,40 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { CarFrontIcon, LayoutIcon } from "lucide-react";
+import { auth } from "@/auth";
 
-interface Route {
-  name: string;
-  path: string;
-  icon: ReactNode;
-}
-
-const routes: Route[] = [
-  {
-    name: "Início",
-    path: "/",
-    icon: <LayoutDashboard className="size-4" />,
-  },
-];
-
-export const RoutesSidebar = () => {
-  const path = usePathname();
-
-  const isActive = (routePath: string) => {
-    if (path === routePath) {
-      return true;
-    }
-    return false;
-  };
-
+export const RoutesSidebar = async () => {
+  const session = await auth();
   return (
     <>
-      {routes?.map((route) => (
-        <SidebarGroup key={route.path}>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem
-                className={cn(
-                  "py-3 px-4 rounded-lg hover:bg-primary/90 flex items-center gap-1.5",
-                  isActive(route.path) && "bg-primary text-background"
-                )}
-              >
-                {route.icon}
-                <Link href={route.path} className="">
-                  {route.name}
-                </Link>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      ))}
+      <SidebarGroup>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem
+              className={cn(
+                "py-3 px-4 rounded-lg hover:bg-primary/90 flex items-center gap-1.5"
+              )}
+            >
+              <LayoutIcon />
+              <Link href="/" className="">
+                Início
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem
+              className={cn(
+                "py-3 px-4 rounded-lg hover:bg-primary/90 flex items-center gap-1.5"
+              )}
+            >
+              <CarFrontIcon />
+              <Link href={`/carros/${session?.user?.id}`} className="">
+                Meus carros
+              </Link>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
     </>
   );
 };

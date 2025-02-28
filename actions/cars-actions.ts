@@ -1,7 +1,9 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/db/drizzle";
 import { carros } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const getCars = async (): Promise<Carro[]> => {
@@ -11,12 +13,16 @@ export const getCars = async (): Promise<Carro[]> => {
 
 export const addCarAction = async ({
   car,
-  userId,
 }: {
   car: Omit<Carro, "id" | "userId">;
-  userId: string;
 }) => {
+  const session = await auth();
+
   try {
+    if (!session?.user?.id) {
+      return { success: false, err: "Usuário não autenticado." };
+    }
+
     await db.insert(carros).values({
       ano: car.ano,
       imagem: car.imagem,
@@ -24,10 +30,9 @@ export const addCarAction = async ({
       modelo: car.modelo,
       placa: car.placa,
       preco: car.preco,
-      userId: userId,
+      userId: session.user.id,
     });
 
-    // Revalidar o cache da rota raiz
     revalidatePath("/");
 
     return { success: true };
@@ -35,4 +40,26 @@ export const addCarAction = async ({
     console.log(err);
     return { success: false, err: "Erro ao adicionar carro." };
   }
+};
+
+export const handleRentalCar = async ({ carId }: { carId: string }) => {
+  await db
+    .update(carros)
+    .set({ status: "alugado" })
+    .where(eq(carros.id, carId));
+
+  revalidatePath("/");
+};
+
+export const getCarrosById = async ({
+  userId,
+}: {
+  userId: string;
+}): Promise<Carro[]> => {
+  const result = await db
+    .select()
+    .from(carros)
+    .where(eq(carros.userId, userId));
+
+  return result;
 };

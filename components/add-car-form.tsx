@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { addCarAction } from "@/actions/cars-actions";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 
 const registerCarFormSchema = z.object({
   modelo: z.string().min(3, "O modelo deve ter no mínimo 3 caracteres."),
@@ -49,11 +48,9 @@ const fileToBase64 = (file: File): Promise<string> => {
 };
 
 export function AddCarForm() {
-  const session = useSession();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  console.log(session, "client");
   const {
     register,
     reset,
@@ -68,22 +65,11 @@ export function AddCarForm() {
     setLoading(true);
 
     try {
-      if (
-        !session ||
-        session.status !== "authenticated" ||
-        !session.data.user
-      ) {
-        return toast.error(
-          "Você precisa estar logado para adicionar um carro."
-        );
-      }
-
       const file = data.imagem[0];
       const base64Image = await fileToBase64(file);
 
       const result = await addCarAction({
         car: { ...data, imagem: base64Image },
-        userId: session.data.user.id!,
       });
 
       if (!result.success) {

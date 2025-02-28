@@ -1,10 +1,9 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
-import { Button } from "./ui/button";
+import { RentalCarButton } from "./rental-car-button";
 
-export const CarCard = ({ car }: { car: Carro }) => {
-  console.log(car.status);
+export const CarCard = async ({ car }: { car: Carro }) => {
   return (
     <Card className="w-full max-w-sm rounded-2xl shadow-lg border p-4">
       <Image
@@ -20,12 +19,12 @@ export const CarCard = ({ car }: { car: Carro }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2 space-y-2">
-        <p className="text-sm">{car.modelo}</p>
+        <p className="text-sm">
+          {car.modelo}
+          {` (${car.ano})`}
+        </p>
         <p className="text-xl font-bold">R$ {car.preco}/dia</p>
-
-        <Button className="w-full mt-3" disabled={car.status !== "disponível"}>
-          {car.status === "disponível" ? "Alugar" : "Indisponível"}
-        </Button>
+        <RentalCarButton car={car} />
       </CardContent>
     </Card>
   );

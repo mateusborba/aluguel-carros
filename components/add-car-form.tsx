@@ -19,6 +19,13 @@ import { z } from "zod";
 import { addCarAction } from "@/actions/cars-actions";
 import { useState } from "react";
 
+const imageSchema =
+  typeof FileList !== "undefined"
+    ? z
+        .instanceof(FileList, { message: "Imagem é obrigatória." })
+        .refine((files) => files.length > 0, "Selecione uma imagem.")
+    : z.any();
+
 const registerCarFormSchema = z.object({
   modelo: z.string().min(3, "O modelo deve ter no mínimo 3 caracteres."),
   marca: z.string().min(3, "A marca deve ter no mínimo 3 caracteres."),
@@ -30,9 +37,7 @@ const registerCarFormSchema = z.object({
   preco: z
     .number({ invalid_type_error: "O valor é obrigatório" })
     .positive("O preço deve ser um valor positivo."),
-  imagem: z
-    .instanceof(FileList, { message: "Imagem é obrigatória." })
-    .refine((files) => files.length > 0, "Selecione uma imagem."),
+  imagem: imageSchema,
 });
 
 type RegisterCarForm = z.infer<typeof registerCarFormSchema>;
@@ -163,11 +168,10 @@ export function AddCarForm() {
             />
             {errors?.imagem && (
               <span className="text-red-500 text-sm">
-                {errors.imagem.message}
+                {String(errors.imagem.message)}
               </span>
             )}
           </div>
-
           <DialogFooter>
             <Button type="submit" disabled={loading}>
               {loading ? <Loader className="animate-spin" /> : "Enviar"}

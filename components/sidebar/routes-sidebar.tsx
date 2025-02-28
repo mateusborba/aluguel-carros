@@ -3,12 +3,10 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuItem,
-} from "../ui/sidebar";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { CarFrontIcon, LayoutIcon } from "lucide-react";
+} from "@/components/ui/sidebar";
+import { CarFrontIcon, GitPullRequestDraft, LayoutIcon } from "lucide-react";
 import { auth } from "@/auth";
+import { SideBarItem } from "./sidebar-item";
 
 export const RoutesSidebar = async () => {
   const session = await auth();
@@ -17,26 +15,17 @@ export const RoutesSidebar = async () => {
       <SidebarGroup>
         <SidebarGroupContent>
           <SidebarMenu>
-            <SidebarMenuItem
-              className={cn(
-                "py-3 px-4 rounded-lg hover:bg-primary/90 flex items-center gap-1.5"
-              )}
-            >
-              <LayoutIcon />
-              <Link href="/" className="">
-                Início
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem
-              className={cn(
-                "py-3 px-4 rounded-lg hover:bg-primary/90 flex items-center gap-1.5"
-              )}
-            >
-              <CarFrontIcon />
-              <Link href={`/carros/${session?.user?.id}`} className="">
-                Meus carros
-              </Link>
-            </SidebarMenuItem>
+            <SideBarItem href="/" label="Início" icon={<LayoutIcon />} />
+            <SideBarItem
+              href={`/carros/${session?.user?.id}`}
+              label="Meus carros"
+              icon={<CarFrontIcon />}
+            />
+            <SideBarItem
+              href={`/solicitacoes/${session?.user?.id}`}
+              label="Solicitações"
+              icon={<GitPullRequestDraft />}
+            />
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

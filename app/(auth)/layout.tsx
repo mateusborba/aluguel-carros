@@ -4,14 +4,12 @@ import { ReactNode } from "react";
 const AuthLayout = async ({ children }: { children: ReactNode }) => {
   return (
     <main className="h-screen w-full items-center justify-center flex">
-      <div className="bg-white w-full h-full hidden lg:flex flex-col justify-between items-center py-10">
+      <div className="bg-white w-full h-full hidden lg:flex flex-col justify-between items-center py-10 border-r border-sidebar-foreground">
         <div />
         <div className="flex flex-col gap-2 items-center -mt-10">
           <div className="flex flex-col gap-2 items-center">
-            <Car className="size-32 text-primary-foreground" />
-            <h1 className="text-5xl text-primary-foreground font-bold">
-              Rental Cars
-            </h1>
+            <Car className="size-32 text-background" />
+            <h1 className="text-5xl text-background font-bold">Rental Cars</h1>
           </div>
         </div>
         <span className="text-primary-foreground mb-10">

@@ -1,18 +1,19 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import Image from "next/image";
 import { RentalCarButton } from "./rental-car-button";
+import Image from "next/image";
 
 export const CarCard = async ({ car }: { car: Carro }) => {
   return (
     <Card className="w-full max-w-sm rounded-2xl shadow-lg border p-4">
-      <Image
-        width={40}
-        height={60}
-        src={car.imagem}
-        alt="imagem do carro"
-        className="w-full h-48 object-cover rounded-xl"
-      />
+      <div className="relative aspect-[16/9]">
+        <Image
+          src={car.imagem}
+          alt={`${car.marca} ${car.modelo}`}
+          fill
+          className="object-cover rounded-xl"
+        />
+      </div>
       <CardHeader className="p-2">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           {car.marca}

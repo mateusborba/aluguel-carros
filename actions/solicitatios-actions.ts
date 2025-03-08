@@ -19,10 +19,17 @@ export async function createSolicitacao({
   dataInicio,
   dataFim,
 }: CreateSolicitacaoParams) {
+  // Verifica se existe alguma solicitação pendente ou aprovada para este carro
   const existingSolicitacoes = await db
     .select()
     .from(solicitacoes)
-    .where(eq(solicitacoes.carroId, carroId));
+    .where(
+      and(
+        eq(solicitacoes.carroId, carroId),
+        // Verifica apenas solicitações pendentes ou aprovadas
+        not(eq(solicitacoes.status, "rejeitada"))
+      )
+    );
 
   if (existingSolicitacoes.length > 0) {
     return { success: false, err: "Carro indisponível no momento." };
@@ -66,16 +73,23 @@ export async function approveSolicitacao(solicitacaoId: string) {
 }
 
 export async function rejectSolicitacao(solicitacaoId: string) {
+  if (!solicitacaoId) {
+    return { success: false, error: "ID da solicitação não fornecido" };
+  }
+
   try {
     // Primeiro, busca a solicitação para obter o ID do carro
     const solicitacao = await db
       .select()
       .from(solicitacoes)
-      .where(eq(solicitacoes.id, solicitacaoId));
+      .where(eq(solicitacoes.id, solicitacaoId))
+      .limit(1);
 
-    if (!solicitacao.length) {
+    if (!solicitacao[0]) {
       return { success: false, error: "Solicitação não encontrada" };
     }
+
+    const carroId = solicitacao[0].carroId;
 
     // Atualiza o status da solicitação para rejeitada
     await db
@@ -87,13 +101,19 @@ export async function rejectSolicitacao(solicitacaoId: string) {
     await db
       .update(carros)
       .set({ status: "disponível" })
-      .where(eq(carros.id, solicitacao[0].carroId));
+      .where(eq(carros.id, carroId));
 
     revalidatePath("/");
-    return { success: true };
+    return {
+      success: true,
+      message: "Solicitação rejeitada com sucesso",
+    };
   } catch (error) {
-    console.error({ error });
-    return { success: false, error: "Erro ao rejeitar solicitação" };
+    console.error("[REJECT_SOLICITACAO_ERROR]", { error, solicitacaoId });
+    return {
+      success: false,
+      error: "Erro ao rejeitar solicitação. Por favor, tente novamente.",
+    };
   }
 }
 
